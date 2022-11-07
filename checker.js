@@ -2,11 +2,29 @@ var itemList = document.getElementById('items');
 var existingItems = JSON.parse(localStorage.getItem('items')) || [];
 var itemData = [];
 var itemCount = 0;
+var undoData = [];
 
 function addItem() {
 	if(document.getElementById("input").value != "") {
 		if(document.getElementById("input").value == "!--") {
 			itemData = [];
+			undoData = [];
+			reList();
+			return;
+		}
+
+		if(document.getElementById("input").value == "!<<") {
+			if(undoData.length >> 0) {
+				itemData.unshift(undoData[0]);
+				undoData.splice(0, 1);
+			}
+			
+			reList();
+			return;
+		}
+
+		if(document.getElementById("input").value == "!<-") {
+			undoData = [];
 			reList();
 			return;
 		}
@@ -17,6 +35,7 @@ function addItem() {
 }
 
 function removeItem(coord) {
+	undoData.unshift(itemData[coord]);
 	itemData.splice(coord, 1);
 	reList();
 }
